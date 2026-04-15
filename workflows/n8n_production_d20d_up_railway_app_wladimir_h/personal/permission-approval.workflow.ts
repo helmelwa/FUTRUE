@@ -2,7 +2,7 @@ import { workflow, node, links } from '@n8n-as-code/transformer';
 
 // <workflow-map>
 // Workflow : Permission Approval Workflow
-// Nodes   : 5  |  Connections: 4
+// Nodes   : 6  |  Connections: 5
 //
 // NODE INDEX
 // ──────────────────────────────────────────────────────────────────
@@ -10,7 +10,8 @@ import { workflow, node, links } from '@n8n-as-code/transformer';
 // WebhookTrigger                     webhook
 // GetManager                         httpRequest
 // SubmitToApprovalServer             httpRequest
-// SendApprovalEmail                  emailSend
+// SendApprovalEmailToManager         emailSend
+// ConfirmRequestReceived             emailSend
 // StoreRequestData                   writeBinaryFile
 //
 // ROUTING MAP
@@ -18,7 +19,8 @@ import { workflow, node, links } from '@n8n-as-code/transformer';
 // WebhookTrigger
 //    → GetManager
 //      → SubmitToApprovalServer
-//        → SendApprovalEmail
+//        → SendApprovalEmailToManager
+//        → ConfirmRequestReceived
 //          → StoreRequestData
 // </workflow-map>
 
@@ -94,12 +96,12 @@ export class PermissionApprovalWorkflow {
     @node({
         id: '6ea54f70-b186-4e03-b6b3-4b61f7986e45',
         webhookId: '2fa119b7-b4ff-471e-a0ad-ec83c3317ac1',
-        name: 'Send Approval Email',
+        name: 'Send Approval Email to Manager',
         type: 'n8n-nodes-base.emailSend',
         version: 2.1,
-        position: [850, 300],
+        position: [850, 200],
     })
-    SendApprovalEmail = {
+    SendApprovalEmailToManager = {
         resource: 'email',
         operation: 'send',
         fromEmail: 'noreply@company.com',
@@ -117,6 +119,35 @@ Request ID: {{ $json.body.requestId }}
 Please approve or deny:
 Approve: http://localhost:8080/approve?id={{ $json.body.requestId }}
 Deny: http://localhost:8080/deny?id={{ $json.body.requestId }}`,
+        options: [],
+    };
+
+    @node({
+        id: 'confirm-request-received',
+        webhookId: 'd90d5139-235e-4283-8f5a-52524508b2fc',
+        name: 'Confirm Request Received',
+        type: 'n8n-nodes-base.emailSend',
+        version: 2.1,
+        position: [850, 400],
+    })
+    ConfirmRequestReceived = {
+        resource: 'email',
+        operation: 'send',
+        fromEmail: 'noreply@company.com',
+        toEmail: '={{ $json.body.requesterEmail }}',
+        subject: 'Your access request has been submitted',
+        emailFormat: 'text',
+        message: `Hi {{ $json.body.requesterName }},
+
+Your access request has been successfully submitted.
+
+Requested Resource: {{ $json.body.resourceName }}
+Request ID: {{ $json.body.requestId }}
+
+Your manager has been notified and will review your request shortly.
+You will receive another email once a decision has been made.
+
+Please await further notification.`,
         options: [],
     };
 
@@ -141,7 +172,8 @@ Deny: http://localhost:8080/deny?id={{ $json.body.requestId }}`,
     defineRouting() {
         this.WebhookTrigger.out(0).to(this.GetManager.in(0));
         this.GetManager.out(0).to(this.SubmitToApprovalServer.in(0));
-        this.SubmitToApprovalServer.out(0).to(this.SendApprovalEmail.in(0));
-        this.SendApprovalEmail.out(0).to(this.StoreRequestData.in(0));
+        this.SubmitToApprovalServer.out(0).to(this.SendApprovalEmailToManager.in(0));
+        this.SubmitToApprovalServer.out(0).to(this.ConfirmRequestReceived.in(0));
+        this.ConfirmRequestReceived.out(0).to(this.StoreRequestData.in(0));
     }
 }

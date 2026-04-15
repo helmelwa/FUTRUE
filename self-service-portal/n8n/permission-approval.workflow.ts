@@ -2,24 +2,31 @@ import { workflow, node, links } from '@n8n-as-code/transformer';
 
 // <workflow-map>
 // Workflow : Permission Approval Workflow
-// Nodes   : 5  |  Connections: 4
+// Nodes   : 6  |  Connections: 5
 //
 // NODE INDEX
 // ──────────────────────────────────────────────────────────────────
+// Property name                    Node type (short)         Flags
 // WebhookTrigger                     webhook
 // GetManager                         httpRequest
 // SubmitToApprovalServer             httpRequest
-// SendApprovalEmail                  emailSend
+// SendApprovalEmailToManager         emailSend
+// ConfirmRequestReceived             emailSend
 // StoreRequestData                   writeBinaryFile
 //
 // ROUTING MAP
 // ──────────────────────────────────────────────────────────────────
 // WebhookTrigger
-//   → GetManager
-//     → SubmitToApprovalServer
-//       → SendApprovalEmail
-//         → StoreRequestData
+//    → GetManager
+//      → SubmitToApprovalServer
+//        → SendApprovalEmailToManager
+//        → ConfirmRequestReceived
+//          → StoreRequestData
 // </workflow-map>
+
+// =====================================================================
+// METADATA DU WORKFLOW
+// =====================================================================
 
 @workflow({
     id: 'I1ZPqmvglRbt4TF8',
@@ -28,6 +35,10 @@ import { workflow, node, links } from '@n8n-as-code/transformer';
     settings: { executionOrder: 'v1', callerPolicy: 'workflowsFromSameOwner', availableInMCP: false },
 })
 export class PermissionApprovalWorkflow {
+    // =====================================================================
+    // CONFIGURATION DES NOEUDS
+    // =====================================================================
+
     @node({
         id: '6f91c8d3-8728-48b1-9595-577aeba02e28',
         webhookId: 'b008c741-92f5-44a4-bc47-0697cb53c093',
@@ -85,12 +96,12 @@ export class PermissionApprovalWorkflow {
     @node({
         id: '6ea54f70-b186-4e03-b6b3-4b61f7986e45',
         webhookId: '2fa119b7-b4ff-471e-a0ad-ec83c3317ac1',
-        name: 'Send Approval Email',
+        name: 'Send Approval Email to Manager',
         type: 'n8n-nodes-base.emailSend',
         version: 2.1,
-        position: [850, 300],
+        position: [850, 200],
     })
-    SendApprovalEmail = {
+    SendApprovalEmailToManager = {
         resource: 'email',
         operation: 'send',
         fromEmail: 'noreply@company.com',
@@ -112,6 +123,35 @@ Deny: http://localhost:8080/deny?id={{ $json.body.requestId }}`,
     };
 
     @node({
+        id: 'confirm-request-received',
+        webhookId: 'd90d5139-235e-4283-8f5a-52524508b2fc',
+        name: 'Confirm Request Received',
+        type: 'n8n-nodes-base.emailSend',
+        version: 2.1,
+        position: [850, 400],
+    })
+    ConfirmRequestReceived = {
+        resource: 'email',
+        operation: 'send',
+        fromEmail: 'noreply@company.com',
+        toEmail: '={{ $json.body.requesterEmail }}',
+        subject: 'Your access request has been submitted',
+        emailFormat: 'text',
+        message: `Hi {{ $json.body.requesterName }},
+
+Your access request has been successfully submitted.
+
+Requested Resource: {{ $json.body.resourceName }}
+Request ID: {{ $json.body.requestId }}
+
+Your manager has been notified and will review your request shortly.
+You will receive another email once a decision has been made.
+
+Please await further notification.`,
+        options: [],
+    };
+
+    @node({
         id: '61974c3b-5683-4e28-8d72-25eff3256677',
         name: 'Store Request Data',
         type: 'n8n-nodes-base.writeBinaryFile',
@@ -124,11 +164,16 @@ Deny: http://localhost:8080/deny?id={{ $json.body.requestId }}`,
         options: {},
     };
 
+    // =====================================================================
+    // ROUTAGE ET CONNEXIONS
+    // =====================================================================
+
     @links()
     defineRouting() {
         this.WebhookTrigger.out(0).to(this.GetManager.in(0));
         this.GetManager.out(0).to(this.SubmitToApprovalServer.in(0));
-        this.SubmitToApprovalServer.out(0).to(this.SendApprovalEmail.in(0));
-        this.SendApprovalEmail.out(0).to(this.StoreRequestData.in(0));
+        this.SubmitToApprovalServer.out(0).to(this.SendApprovalEmailToManager.in(0));
+        this.SubmitToApprovalServer.out(0).to(this.ConfirmRequestReceived.in(0));
+        this.ConfirmRequestReceived.out(0).to(this.StoreRequestData.in(0));
     }
 }
