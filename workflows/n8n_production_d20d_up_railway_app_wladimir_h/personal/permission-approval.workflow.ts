@@ -10,8 +10,8 @@ import { workflow, node, links } from '@n8n-as-code/transformer';
 // WebhookTrigger                     webhook
 // GetManager                         httpRequest
 // SubmitToApprovalServer             httpRequest
-// SendGmailToManager                 gmail                      [creds]
-// ConfirmGmailToRequester            gmail                      [creds]
+// SendSmtpToManager                  emailSend                  [creds]
+// ConfirmSmtpToRequester             emailSend                  [creds]
 // StoreRequestData                   writeBinaryFile
 //
 // ROUTING MAP
@@ -19,8 +19,8 @@ import { workflow, node, links } from '@n8n-as-code/transformer';
 // WebhookTrigger
 //    → GetManager
 //      → SubmitToApprovalServer
-//        → SendGmailToManager
-//        → ConfirmGmailToRequester
+//        → SendSmtpToManager
+//        → ConfirmSmtpToRequester
 //          → StoreRequestData
 // </workflow-map>
 
@@ -99,20 +99,21 @@ export class PermissionApprovalWorkflow {
     };
 
     @node({
-        id: 'send-gmail-to-manager',
-        webhookId: '0d2277fc-4d3f-45f8-b11c-dcd1095fc030',
-        name: 'Send Gmail to Manager',
-        type: 'n8n-nodes-base.gmail',
-        version: 2.2,
+        id: 'send-smtp-to-manager',
+        webhookId: '518a326a-3ee9-4ff3-8c29-dfc079b62b90',
+        name: 'Send SMTP to Manager',
+        type: 'n8n-nodes-base.emailSend',
+        version: 2.1,
         position: [850, 200],
-        credentials: { gmailOAuth2Api: { id: 'gmail-creds', name: 'Gmail' } },
+        credentials: { smtp: { id: 'smtp-creds', name: 'SMTP' } },
     })
-    SendGmailToManager = {
-        authentication: 'oAuth2',
-        resource: 'message',
-        operation: 'create',
+    SendSmtpToManager = {
+        resource: 'email',
+        operation: 'send',
+        fromEmail: 'noreply@company.com',
+        toEmail: '={{ $json.managerEmail }}',
         subject: 'Permission Approval Request',
-        emailType: 'text',
+        emailFormat: 'text',
         message: `Hi {{ $json.managerName }},
 
 {{ $json.body.requesterName }} ({{ $json.body.requesterEmail }}) is requesting access to: {{ $json.body.resourceName }}
@@ -124,25 +125,25 @@ Request ID: {{ $json.body.requestId }}
 Please approve or deny:
 Approve: http://localhost:8080/approve?id={{ $json.body.requestId }}
 Deny: http://localhost:8080/deny?id={{ $json.body.requestId }}`,
-        sendTo: '={{ $json.managerEmail }}',
         options: [],
     };
 
     @node({
-        id: 'confirm-gmail-to-requester',
-        webhookId: 'c8671702-efb0-4a98-b502-6665c1b64af4',
-        name: 'Confirm Gmail to Requester',
-        type: 'n8n-nodes-base.gmail',
-        version: 2.2,
+        id: 'confirm-smtp-to-requester',
+        webhookId: '29118168-e20f-4878-b09a-1658e572380e',
+        name: 'Confirm SMTP to Requester',
+        type: 'n8n-nodes-base.emailSend',
+        version: 2.1,
         position: [850, 400],
-        credentials: { gmailOAuth2Api: { id: 'gmail-creds', name: 'Gmail' } },
+        credentials: { smtp: { id: 'smtp-creds', name: 'SMTP' } },
     })
-    ConfirmGmailToRequester = {
-        authentication: 'oAuth2',
-        resource: 'message',
-        operation: 'create',
+    ConfirmSmtpToRequester = {
+        resource: 'email',
+        operation: 'send',
+        fromEmail: 'noreply@company.com',
+        toEmail: '={{ $json.body.requesterEmail }}',
         subject: 'Your access request has been submitted',
-        emailType: 'text',
+        emailFormat: 'text',
         message: `Hi {{ $json.body.requesterName }},
 
 Your access request has been successfully submitted.
@@ -154,7 +155,6 @@ Your manager has been notified and will review your request shortly.
 You will receive another email once a decision has been made.
 
 Please await further notification.`,
-        sendTo: '={{ $json.body.requesterEmail }}',
         options: [],
     };
 
@@ -179,8 +179,8 @@ Please await further notification.`,
     defineRouting() {
         this.WebhookTrigger.out(0).to(this.GetManager.in(0));
         this.GetManager.out(0).to(this.SubmitToApprovalServer.in(0));
-        this.SubmitToApprovalServer.out(0).to(this.SendGmailToManager.in(0));
-        this.SubmitToApprovalServer.out(0).to(this.ConfirmGmailToRequester.in(0));
-        this.ConfirmGmailToRequester.out(0).to(this.StoreRequestData.in(0));
+        this.SubmitToApprovalServer.out(0).to(this.SendSmtpToManager.in(0));
+        this.SubmitToApprovalServer.out(0).to(this.ConfirmSmtpToRequester.in(0));
+        this.ConfirmSmtpToRequester.out(0).to(this.StoreRequestData.in(0));
     }
 }

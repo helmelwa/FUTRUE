@@ -1,8 +1,8 @@
 {
   "workflows": {
     "I1ZPqmvglRbt4TF8": {
-      "lastSyncedHash": "4ff5144c971a04692b7ade2b99897b3304a8345e1bb0b19a806e4732b0190656",
-      "lastSyncedAt": "2026-04-15T17:38:28.378Z",
+      "lastSyncedHash": "02c63e82e99d72f50911429cf1bad32fd2dcbb7eb1a42999a7ae549f97ff6a4b",
+      "lastSyncedAt": "2026-04-15T17:41:25.354Z",
       "filename": "permission-approval.workflow.ts"
     }
   }
