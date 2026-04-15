@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         try {
-            const response = await fetch('http://localhost:5678/webhook/permission-request', {
+            const response = await fetch('https://n8n-production-d20d.up.railway.app/webhook/permission-request', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

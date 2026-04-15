@@ -10,8 +10,8 @@ import { workflow, node, links } from '@n8n-as-code/transformer';
 // WebhookTrigger                     webhook
 // GetManager                         httpRequest
 // SubmitToApprovalServer             httpRequest
-// SendApprovalEmailToManager         emailSend
-// ConfirmRequestReceived             emailSend
+// SendGmailToManager                 gmail                      [creds]
+// ConfirmGmailToRequester            gmail                      [creds]
 // StoreRequestData                   writeBinaryFile
 //
 // ROUTING MAP
@@ -19,8 +19,8 @@ import { workflow, node, links } from '@n8n-as-code/transformer';
 // WebhookTrigger
 //    → GetManager
 //      → SubmitToApprovalServer
-//        → SendApprovalEmailToManager
-//        → ConfirmRequestReceived
+//        → SendGmailToManager
+//        → ConfirmGmailToRequester
 //          → StoreRequestData
 // </workflow-map>
 
@@ -32,7 +32,12 @@ import { workflow, node, links } from '@n8n-as-code/transformer';
     id: 'I1ZPqmvglRbt4TF8',
     name: 'Permission Approval Workflow',
     active: false,
-    settings: { executionOrder: 'v1', callerPolicy: 'workflowsFromSameOwner', availableInMCP: false },
+    settings: {
+        executionOrder: 'v1',
+        callerPolicy: 'workflowsFromSameOwner',
+        availableInMCP: false,
+        binaryMode: 'separate',
+    },
 })
 export class PermissionApprovalWorkflow {
     // =====================================================================
@@ -94,20 +99,20 @@ export class PermissionApprovalWorkflow {
     };
 
     @node({
-        id: '6ea54f70-b186-4e03-b6b3-4b61f7986e45',
-        webhookId: '2fa119b7-b4ff-471e-a0ad-ec83c3317ac1',
-        name: 'Send Approval Email to Manager',
-        type: 'n8n-nodes-base.emailSend',
-        version: 2.1,
+        id: 'send-gmail-to-manager',
+        webhookId: '0d2277fc-4d3f-45f8-b11c-dcd1095fc030',
+        name: 'Send Gmail to Manager',
+        type: 'n8n-nodes-base.gmail',
+        version: 2.2,
         position: [850, 200],
+        credentials: { gmailOAuth2Api: { id: 'gmail-creds', name: 'Gmail' } },
     })
-    SendApprovalEmailToManager = {
-        resource: 'email',
-        operation: 'send',
-        fromEmail: 'noreply@company.com',
-        toEmail: '={{ $json.managerEmail }}',
+    SendGmailToManager = {
+        authentication: 'oAuth2',
+        resource: 'message',
+        operation: 'create',
         subject: 'Permission Approval Request',
-        emailFormat: 'text',
+        emailType: 'text',
         message: `Hi {{ $json.managerName }},
 
 {{ $json.body.requesterName }} ({{ $json.body.requesterEmail }}) is requesting access to: {{ $json.body.resourceName }}
@@ -119,24 +124,25 @@ Request ID: {{ $json.body.requestId }}
 Please approve or deny:
 Approve: http://localhost:8080/approve?id={{ $json.body.requestId }}
 Deny: http://localhost:8080/deny?id={{ $json.body.requestId }}`,
+        sendTo: '={{ $json.managerEmail }}',
         options: [],
     };
 
     @node({
-        id: 'confirm-request-received',
-        webhookId: 'd90d5139-235e-4283-8f5a-52524508b2fc',
-        name: 'Confirm Request Received',
-        type: 'n8n-nodes-base.emailSend',
-        version: 2.1,
+        id: 'confirm-gmail-to-requester',
+        webhookId: 'c8671702-efb0-4a98-b502-6665c1b64af4',
+        name: 'Confirm Gmail to Requester',
+        type: 'n8n-nodes-base.gmail',
+        version: 2.2,
         position: [850, 400],
+        credentials: { gmailOAuth2Api: { id: 'gmail-creds', name: 'Gmail' } },
     })
-    ConfirmRequestReceived = {
-        resource: 'email',
-        operation: 'send',
-        fromEmail: 'noreply@company.com',
-        toEmail: '={{ $json.body.requesterEmail }}',
+    ConfirmGmailToRequester = {
+        authentication: 'oAuth2',
+        resource: 'message',
+        operation: 'create',
         subject: 'Your access request has been submitted',
-        emailFormat: 'text',
+        emailType: 'text',
         message: `Hi {{ $json.body.requesterName }},
 
 Your access request has been successfully submitted.
@@ -148,6 +154,7 @@ Your manager has been notified and will review your request shortly.
 You will receive another email once a decision has been made.
 
 Please await further notification.`,
+        sendTo: '={{ $json.body.requesterEmail }}',
         options: [],
     };
 
@@ -172,8 +179,8 @@ Please await further notification.`,
     defineRouting() {
         this.WebhookTrigger.out(0).to(this.GetManager.in(0));
         this.GetManager.out(0).to(this.SubmitToApprovalServer.in(0));
-        this.SubmitToApprovalServer.out(0).to(this.SendApprovalEmailToManager.in(0));
-        this.SubmitToApprovalServer.out(0).to(this.ConfirmRequestReceived.in(0));
-        this.ConfirmRequestReceived.out(0).to(this.StoreRequestData.in(0));
+        this.SubmitToApprovalServer.out(0).to(this.SendGmailToManager.in(0));
+        this.SubmitToApprovalServer.out(0).to(this.ConfirmGmailToRequester.in(0));
+        this.ConfirmGmailToRequester.out(0).to(this.StoreRequestData.in(0));
     }
 }
