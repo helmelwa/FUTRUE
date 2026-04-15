@@ -18,7 +18,11 @@
       "Bash(npx --yes n8nac --version)",
       "Bash(npx --yes n8nac skills search \"webhook\")",
       "Bash(npx --yes n8nac skills search \"http request\")",
-      "Bash(npx:*)"
+      "Bash(npx:*)",
+      "Bash(n8nac --help)",
+      "Bash(n8n-as-code --help)",
+      "Bash(N8N_HOST=\"https://n8n-production-d20d.up.railway.app\" N8N_API_KEY=\"your-api-key\" npx:*)",
+      "Bash(curl -s \"https://n8n-production-d20d.up.railway.app/api/v1/workflows\" -H \"X-N8N-API-KEY: your-api-key\")"
     ]
   }
 }

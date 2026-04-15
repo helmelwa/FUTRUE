@@ -6,6 +6,7 @@ import { workflow, node, links } from '@n8n-as-code/transformer';
 //
 // NODE INDEX
 // ──────────────────────────────────────────────────────────────────
+// Property name                    Node type (short)         Flags
 // WebhookTrigger                     webhook
 // GetManager                         httpRequest
 // SubmitToApprovalServer             httpRequest
@@ -15,11 +16,15 @@ import { workflow, node, links } from '@n8n-as-code/transformer';
 // ROUTING MAP
 // ──────────────────────────────────────────────────────────────────
 // WebhookTrigger
-//   → GetManager
-//     → SubmitToApprovalServer
-//       → SendApprovalEmail
-//         → StoreRequestData
+//    → GetManager
+//      → SubmitToApprovalServer
+//        → SendApprovalEmail
+//          → StoreRequestData
 // </workflow-map>
+
+// =====================================================================
+// METADATA DU WORKFLOW
+// =====================================================================
 
 @workflow({
     id: 'I1ZPqmvglRbt4TF8',
@@ -28,6 +33,10 @@ import { workflow, node, links } from '@n8n-as-code/transformer';
     settings: { executionOrder: 'v1', callerPolicy: 'workflowsFromSameOwner', availableInMCP: false },
 })
 export class PermissionApprovalWorkflow {
+    // =====================================================================
+    // CONFIGURATION DES NOEUDS
+    // =====================================================================
+
     @node({
         id: '6f91c8d3-8728-48b1-9595-577aeba02e28',
         webhookId: 'b008c741-92f5-44a4-bc47-0697cb53c093',
@@ -123,6 +132,10 @@ Deny: http://localhost:8080/deny?id={{ $json.body.requestId }}`,
         dataPropertyName: 'data',
         options: {},
     };
+
+    // =====================================================================
+    // ROUTAGE ET CONNEXIONS
+    // =====================================================================
 
     @links()
     defineRouting() {
