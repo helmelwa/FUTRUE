@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Permission Request Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Request Resource Access</h1>
+            <p class="subtitle">Submit a request for system access or permissions</p>
+
+            <form id="permissionForm">
+                <div class="form-group">
+                    <label for="requesterName">Your Name</label>
+                    <input type="text" id="requesterName" name="requesterName" required placeholder="Enter your full name">
+                </div>
+
+                <div class="form-group">
+                    <label for="requesterEmail">Your Email</label>
+                    <input type="email" id="requesterEmail" name="requesterEmail" required placeholder="your.email@company.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="resource">Resource Access</label>
+                    <select id="resource" name="resource" required>
+                        <option value="" disabled selected>Select a resource</option>
+                        <option value="Analytics Software License">Analytics Software License</option>
+                        <option value="Marketing SharePoint">Marketing SharePoint</option>
+                        <option value="GitHub Developer Access">GitHub Developer Access</option>
+                        <option value="Jira Project Access">Jira Project Access</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="justification">Business Justification</label>
+                    <textarea id="justification" name="justification" rows="4" required placeholder="Explain why you need access to this resource and how it relates to your work..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">Submit Request</button>
+            </form>
+
+            <div id="statusMessage" class="status-message hidden"></div>
+
+            <div id="requestStatus" class="request-status hidden">
+                <h3>Request Status</h3>
+                <div id="statusDetails"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

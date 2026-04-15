@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "activeInstanceId": "instance-15831f3a",
+  "instances": [
+    {
+      "id": "instance-15831f3a",
+      "name": "n8n-production-d20d.up.railway.app · Wladimir Helmel",
+      "host": "https://n8n-production-d20d.up.railway.app",
+      "syncFolder": "workflows",
+      "projectId": "personal",
+      "projectName": "Personal",
+      "instanceIdentifier": "n8n_production_d20d_up_railway_app_wladimir_h",
+      "workflowDir": "workflows/n8n_production_d20d_up_railway_app_wladimir_h/personal",
+      "verification": {
+        "status": "verified",
+        "normalizedHost": "https://n8n-production-d20d.up.railway.app",
+        "userId": "5b9bd6bb-9028-4639-99bc-b26b55eb0644",
+        "userName": "Wladimir Helmel",
+        "userEmail": "apply.office.info@gmail.com",
+        "lastCheckedAt": "2026-04-15T17:00:44.645Z"
+      }
+    }
+  ],
+  "host": "https://n8n-production-d20d.up.railway.app",
+  "syncFolder": "workflows",
+  "projectId": "personal",
+  "projectName": "Personal",
+  "instanceIdentifier": "n8n_production_d20d_up_railway_app_wladimir_h",
+  "workflowDir": "workflows/n8n_production_d20d_up_railway_app_wladimir_h/personal"
+}

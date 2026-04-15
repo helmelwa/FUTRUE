@@ -1,0 +1,92 @@
+{
+  "name": "Permission Approval Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "permission-request",
+        "responseMode": "onLastNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "permission-request"
+    },
+    {
+      "parameters": {
+        "url": "=http://localhost:3000/api/manager/{{ $json.body.requesterEmail }}",
+        "method": "GET",
+        "options": {}
+      },
+      "id": "get-manager",
+      "name": "Get Manager",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [450, 300],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "subject": "Permission Approval Request",
+        "toEmail": "={{ $json.managerEmail }}",
+        "body": "=:Hi {{ $json.managerName }},\n\n{{ $json.body.requesterName }} is requesting access to {{ $json.body.resourceName }}.\n\nRequest ID: {{ $json.body.requestId }}\n\nPlease approve or deny this request:\n\nApprove: http://localhost:8080/approve?id={{ $json.body.requestId }}\nDeny: http://localhost:8080/deny?id={{ $json.body.requestId }}",
+        "options": {}
+      },
+      "id": "send-email",
+      "name": "Send Approval Email",
+      "type": "n8n-nodes-base.sendEmail",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "fileName": "=/tmp/permission-request-{{ $json.body.requestId }}.json",
+        "data": "={{ $json }}",
+        "options": {}
+      },
+      "id": "write-file",
+      "name": "Store Request Data",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "typeVersion": 1,
+      "position": [850, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Manager",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Manager": {
+      "main": [
+        [
+          {
+            "node": "Send Approval Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Approval Email": {
+      "main": [
+        [
+          {
+            "node": "Store Request Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

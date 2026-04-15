@@ -13,7 +13,12 @@
       "Bash(git init:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git config:*)"
+      "Bash(git config:*)",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('C:/Users/HELM/Projects/FUTRUE/self-service-portal/n8n/approval-workflow.json'\\)\\)\")",
+      "Bash(npx --yes n8nac --version)",
+      "Bash(npx --yes n8nac skills search \"webhook\")",
+      "Bash(npx --yes n8nac skills search \"http request\")",
+      "Bash(npx:*)"
     ]
   }
 }
