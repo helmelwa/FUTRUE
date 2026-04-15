@@ -26,7 +26,8 @@
       "Bash(node n8n/mock-api-server.js)",
       "Bash(node n8n/approval-server.js)",
       "Bash(start /b node n8n/mock-api-server.js)",
-      "Bash(netstat -ano)"
+      "Bash(netstat -ano)",
+      "Bash(curl:*)"
     ]
   }
 }
