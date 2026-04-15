@@ -1,0 +1,2 @@
+requestId,requesterEmail,requesterName,resourceName,justification,status,createdAt
+REQ-001,test@test.com,Test User,Analytics Software License,Need for testing,pending,2026-04-15T00:00:00Z

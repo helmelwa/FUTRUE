@@ -25,8 +25,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const justification = document.getElementById('justification').value.trim();
         const timestamp = new Date().toISOString();
 
+        // Generate unique request ID
+        const requestId = 'REQ-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+
         // Build request payload
         const payload = {
+            requestId,
             requesterEmail,
             requesterName,
             resource,
@@ -35,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         try {
-            const response = await fetch('https://n8n-production-d20d.up.railway.app/webhook/permission-request', {
+            const response = await fetch('https://n8n-production-d20d.up.railway.app/webhook/submit-request', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -52,10 +56,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Show request status
                 statusDetails.innerHTML = `
+                    <p><span class="label">Request ID:</span> ${escapeHtml(requestId)}</p>
                     <p><span class="label">Name:</span> ${escapeHtml(requesterName)}</p>
                     <p><span class="label">Email:</span> ${escapeHtml(requesterEmail)}</p>
                     <p><span class="label">Resource:</span> ${escapeHtml(resource)}</p>
-                    <p><span class="label">Justification:</span> ${escapeHtml(justification)}</p>
+                    <p><span class="label">Status:</span> Pending Approval</p>
                     <p><span class="label">Submitted:</span> ${new Date(timestamp).toLocaleString()}</p>
                 `;
                 requestStatus.classList.remove('hidden');
