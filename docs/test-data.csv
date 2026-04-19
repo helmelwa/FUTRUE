@@ -1,0 +1,22 @@
+action,requestId,requesterName,requesterEmail,resource,justification,testCase
+submit-request,TEST-TC01-001,Wladimir Helm,gelmelv@gmail.com,GitHub Organization Access,TC-01 Happy path submit,TC-01-HAPPY
+submit-request,TEST-TC02-001,Alice Agent,am_us_733289_1771706269570@agentmail.to,GitHub Organization Access,TC-02 Submit for approve,TC-02-APPROVE
+submit-request,TEST-TC03-001,Bob Agent,am_us_733289_1771701590387@agentmail.to,GitHub Organization Access,TC-03 Submit for deny,TC-03-DENY
+submit-request,TEST-TC04-001,Charlie Agent,am_us_733289_1771700024721@agentmail.to,GitHub Organization Access,TC-04 For double approve idempotency,TC-04-IDEM-APPROVE
+submit-request,TEST-TC05-001,Diana Agent,gelmelv@gmail.com,GitHub Organization Access,TC-05 For double deny idempotency,TC-05-IDEM-DENY
+submit-request,TEST-TC06-001,Eve Agent,am_us_733289_1771706269570@agentmail.to,GitHub Organization Access,TC-06 GitHub 404 expected,TC-06-GITHUB-404
+submit-request,TEST-TC07-001,Frank Agent,am_us_733289_1771701590387@agentmail.to,GitHub Organization Access,TC-07 GitHub 403 expected,TC-07-GITHUB-403
+submit-request,TEST-TC08-001,Grace Agent,am_us_733289_1771700024721@agentmail.to,GitHub Organization Access,TC-08 GitHub timeout expected,TC-08-GITHUB-TIMEOUT
+submit-request,TEST-TC09-001,Henry Agent,gelmelv@gmail.com,GitHub Organization Access,TC-09 Non-existent request test,TC-09-NONEXISTENT
+submit-request,TEST-TC10-001,Iris Agent,am_us_733289_1771706269570@agentmail.to,GitHub Organization Access,TC-10 Manager not found test,TC-10-MGR-NOT-FOUND
+approve-request,TEST-TC02-001,N/A,N/A,N/A,N/A,TC-02-APPROVE
+approve-request,TEST-TC04-001,N/A,N/A,N/A,N/A,TC-04-IDEM-APPROVE-FIRST
+approve-request,TEST-TC04-001,N/A,N/A,N/A,N/A,TC-04-IDEM-APPROVE-SECOND
+deny-request,TEST-TC03-001,N/A,N/A,N/A,N/A,TC-03-DENY
+deny-request,TEST-TC05-001,N/A,N/A,N/A,N/A,TC-05-IDEM-DENY-FIRST
+deny-request,TEST-TC05-001,N/A,N/A,N/A,N/A,TC-05-IDEM-DENY-SECOND
+approve-request,TEST-TC06-001,N/A,N/A,N/A,N/A,TC-06-GITHUB-404
+approve-request,TEST-TC07-001,N/A,N/A,N/A,N/A,TC-07-GITHUB-403
+approve-request,TEST-TC08-001,N/A,N/A,N/A,N/A,TC-08-GITHUB-TIMEOUT
+approve-request,UNKNOWN-123,N/A,N/A,N/A,N/A,TC-09-NONEXISTENT
+deny-request,UNKNOWN-456,N/A,N/A,N/A,N/A,TC-09-NONEXISTENT
