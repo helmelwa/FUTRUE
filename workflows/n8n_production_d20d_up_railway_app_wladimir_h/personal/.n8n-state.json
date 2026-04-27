@@ -1,9 +1,19 @@
 {
   "workflows": {
+    "BzPEgYmv3SgFQKjs": {
+      "lastSyncedHash": "c256f52f9083e7989110bde4134bb545a194922a236b624b7083f4597bfb1e52",
+      "lastSyncedAt": "2026-04-20T20:24:10.560Z",
+      "filename": "1.2 Fehlerbehandlung _ Global Exception Handler.workflow.ts"
+    },
+    "6dTN9NnSffcSmY0u": {
+      "lastSyncedHash": "4b0a07b284f04864ce18ad20b684ef1d367f7f4263750246428d8cf93324141e",
+      "lastSyncedAt": "2026-04-20T21:43:22.237Z",
+      "filename": "GET _api_manager__requesterEmail.workflow.ts"
+    },
     "I1ZPqmvglRbt4TF8": {
-      "lastSyncedHash": "34023d35ddb99ad74349011e855201239c02b08278df9c397081194fc7ea26ca",
-      "lastSyncedAt": "2026-04-15T18:03:54.593Z",
-      "filename": "permission-approval.workflow.ts"
+      "lastSyncedHash": "aad1aef5d5a1430f43c9f1b894208c280135d2b6b66e2c92631c6b2e91821783",
+      "lastSyncedAt": "2026-04-20T23:32:13.458Z",
+      "filename": "1.1 Permission Approval Workflow.workflow.ts"
     }
   }
 }

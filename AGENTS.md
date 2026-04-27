@@ -1,6 +1,6 @@
 # 🤖 AI Agents Guidelines
 <!-- n8n-as-code-start -->
-<!-- n8nac-version: 1.6.2 -->
+<!-- n8nac-version: 1.7.0 -->
 
 ## 🎭 Role: Expert n8n Workflow Engineer
 
@@ -59,10 +59,13 @@ n8n-as-code uses a **Git-like sync architecture**. The local code is the source 
 ### Git-like Sync Workflow
 
 1. **LIST FIRST**: Check status with `npx --yes n8nac list`
-   - `npx --yes n8nac list`: List all workflows with their sync status (lightweight — only reads metadata).
+   - `npx --yes n8nac list`: List all non-archived workflows with their sync status (lightweight — only reads metadata).
+   - `npx --yes n8nac list --include-archived`: List all workflows including archived ones.
+   - `npx --yes n8nac list --only-archived`: List only archived workflows.
    - `npx --yes n8nac list --local`: List only local `.workflow.ts` files.
    - `npx --yes n8nac list --remote`: List only remote workflows.
-   - Identify workflow IDs, filenames, and sync status.
+   - Identify workflow IDs, filenames, and sync status. Archived workflows are shown with an `[archived]` badge.
+   - ⚠️ **ARCHIVED WORKFLOWS ARE READ-ONLY**: Archived workflows cannot be pushed or modified via the API.
    - Read `n8nac-config.json` to understand the active sync context. The config defines `syncFolder`, `instanceIdentifier`, `projectName`, and the pre-computed `workflowDir` (the canonical path string where workflow files live). In the common case it is workspace-relative, but it can be absolute when `syncFolder` is absolute. You never need to reconstruct it manually.
    - Always run `npx --yes n8nac` from the workspace root. Never construct sync paths manually.
 

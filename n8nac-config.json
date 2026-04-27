@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "activeInstanceId": "instance-15831f3a",
+  "activeInstanceId": "instance-1715a871",
   "instances": [
     {
-      "id": "instance-15831f3a",
+      "id": "instance-1715a871",
       "name": "n8n-production-d20d.up.railway.app · Wladimir Helmel",
       "host": "https://n8n-production-d20d.up.railway.app",
       "syncFolder": "workflows",
@@ -17,7 +17,7 @@
         "userId": "5b9bd6bb-9028-4639-99bc-b26b55eb0644",
         "userName": "Wladimir Helmel",
         "userEmail": "apply.office.info@gmail.com",
-        "lastCheckedAt": "2026-04-15T17:00:44.645Z"
+        "lastCheckedAt": "2026-04-27T09:30:08.914Z"
       }
     }
   ],

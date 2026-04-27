@@ -129,6 +129,3 @@ Umsetzung benötigen würdest
 •  Es geht nicht darum, ein fertiges Produkt zu zeigen, sondern deine Fähigkeit, ein solches
 Problem strukturiert zu analysieren und eine technisch fundierte Lösung zu konzipieren
 bzw. einen funktionierenden Prototypen zu implementieren
-
-5 von 5
-

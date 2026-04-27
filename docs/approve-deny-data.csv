@@ -1,0 +1,8 @@
+action,requestId,testCase,description
+APPROVE,TEST-A1-001,TC-A1-APPROVE-FLOW,Approve request - should succeed
+APPROVE,TEST-I2-001,TC-I2-DOUBLE-APPROVE,First approve
+APPROVE,TEST-I2-001,TC-I2-DOUBLE-APPROVE,Second approve - idempotency (should do nothing)
+DENY,TEST-D1-001,TC-D1-DENY-FLOW,Deny request - should succeed
+APPROVE,NONEXISTENT-123,TC-E1-NONEXISTENT,Approve nonexistent - graceful handling
+DENY,NONEXISTENT-456,TC-E1-NONEXISTENT,Deny nonexistent - graceful handling
+APPROVE,TEST-E2-001,TC-E2-GITHUB-404,Approve - GitHub 404 expected
